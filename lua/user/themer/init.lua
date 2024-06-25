@@ -100,14 +100,14 @@ function compile()
         error "Integration path does not exist!" return
     end
 
-    local themecount = 1
+    local themecount = 0
     local palettecount = #vim.fn.readdir(palette_path)
     local in_progress = true
     local start_time = vim.loop.hrtime()
 
     for _, palettefile in ipairs(vim.fn.readdir(palette_path)) do
-        write(dofile(palette_path .. "/" .. palettefile), themecount, palettecount)
         themecount = themecount + 1
+        write(dofile(palette_path .. "/" .. palettefile), themecount, palettecount)
     end
     if vim.loop.fs_stat(colors_dir .. "/theme").type == "file" then
         pcall(dofile, colors_dir .. "/theme")
@@ -134,7 +134,6 @@ end, 1000)
 
 -- run
 vim.api.nvim_create_user_command("ThemeCompile", compile, {})
-vim.api.nvim_create_user_command("Retheme", function() pcall(dofile, colors_dir .. "/theme") end, {})
 vim.defer_fn(function() if #vim.fn.readdir(colors_dir) <= 3 then compile() end end, 0)
 if vim.loop.fs_stat(colors_dir .. "/theme").type == "file" then
     pcall(dofile, colors_dir .. "/theme")

@@ -7,8 +7,9 @@ require("user.themer")
 
 -- can be loaded asynchronously
 vim.defer_fn(function()
-    require("user.statusline").setup()
+    require("user.ui")
     require("user.bufdel")
 end, 100)
 
+-- other plugin stuff
 require("user.plug")

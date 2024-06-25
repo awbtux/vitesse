@@ -6,8 +6,6 @@ end
 local opts = {
     providers = {
         'regex',
---        'lsp',
---        'treesitter',
     },
 
     delay = 100,

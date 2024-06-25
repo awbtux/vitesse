@@ -93,6 +93,7 @@ bind("n", "<leader>gc", ":Telescope git_commits<LF>", opts)
 bind("n", "<leader>gb", ":Telescope git_bcommits<LF>", opts)
 --bind("n", "<leader>t", ":ToggleTerm<LF>", opts)
 bind("n", "<leader>t", ":terminal<LF>", opts)
+bind("n", "<leader>T", ":vsplit | terminal<LF>", opts)
 bind("n", "Q", ':Bdelete!<LF>', opts)
 
 -- nvim tree keybinds

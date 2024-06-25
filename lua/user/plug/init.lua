@@ -92,7 +92,9 @@ local plugins = {
         },
         main = "ibl",
         config = function()
-            if vim.g.termgui == true then require "user.plug.indentline" end
+            vim.defer_fn(function()
+                if vim.g.termgui == true then require "user.plug.indentline" end
+            end, 100)
         end,
     },
 }
