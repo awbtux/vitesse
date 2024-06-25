@@ -10,6 +10,16 @@ end
 vim.opt.rtp:prepend(install_path)
 
 local plugins = {
+    -- session support
+    { "stevearc/resession.nvim",
+        lazy = false,
+        config = function()
+            vim.defer_fn(function()
+                require "user.plug.resession"
+            end, 100)
+        end,
+    },
+
     -- splash screen
     { "goolord/alpha-nvim",
         event = "VimEnter",

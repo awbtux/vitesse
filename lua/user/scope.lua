@@ -9,9 +9,9 @@ M = {
             pre_tab_enter = nil,
             post_tab_enter = nil,
             pre_tab_leave = nil,
-            post_tab_leave= nil,
-            pre_tab_close= nil,
-            post_tab_close= nil,
+            post_tab_leave = nil,
+            pre_tab_close = nil,
+            post_tab_close = nil,
         }
     }
 }
@@ -131,13 +131,13 @@ function M.deserialize_state(state)
     for _, table in pairs(scope_state.cache) do
         cache[#cache + 1] = M.get_buffer_ids(table)
     end
-    require("scope").cache = cache
-    require("scope").last_tab = scope_state.last_tab
-    require("scope").on_tab_enter()
+    require("user.scope").cache = cache
+    require("user.scope").last_tab = scope_state.last_tab
+    require("user.scope").on_tab_enter()
 end
 
 function M.serialize_state()
-    local core = require("scope")
+    local core = require("user.scope")
     local scope_cache = {}
     for _, table in pairs(M.cache) do
         scope_cache[#scope_cache + 1] = M.get_buffer_names(table)

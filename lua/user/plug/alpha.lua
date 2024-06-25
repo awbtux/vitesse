@@ -23,7 +23,7 @@ dashboard.section.header.val = {
 dashboard.section.buttons.val = {
     button("f", icons.ui.Files .. " Find file", ":Telescope find_files find_command=find,-xdev,-maxdepth,6<LF>"),
     button("n", icons.ui.NewFile .. " New file", ":ene<LF>"),
-    button("s", icons.ui.SignIn .. " Load session", ":lua require('persistence').load()<CR>"),
+    button("s", icons.ui.SignIn .. " Load session", ":lua pcall(function() require('resession').load(vim.fn.getcwd(), { dir = 'dirsession', silence_errors = true }) end)<CR>"),
     button("r", icons.ui.History .. " Recent files", ":Telescope oldfiles<LF>"),
     button("t", icons.ui.Text .. " Find text", ":Telescope live_grep<LF>"),
     button("c", icons.ui.Gear .. " Config", ":e ~/.config/nvim/init.lua<LF>"),
