@@ -35,10 +35,6 @@ end
 
 -- after compile
 function done(in_progress, themecount, start_time)
-    local themename = io.open(colors_dir .. "/___theme", "w") if themename then
-        themename:write("vim.cmd('colorscheme ${theme_vim_colorscheme}')")
-        themename:close()
-    end
     vim.defer_fn(function()
         if not in_progress then
             vimprint(" ")
@@ -113,13 +109,15 @@ function compile()
         write(dofile(palette_path .. "/" .. palettefile), themecount, palettecount)
         themecount = themecount + 1
     end
-    pcall(dofile, colors_dir .. "/theme")
+    if vim.loop.fs_stat(colors_dir .. "/theme").type == "file" then
+        pcall(dofile, colors_dir .. "/theme")
+    end
     vim.defer_fn(function() done(false, themecount, start_time) end, 0)
 end
 
 -- update the vim theme when it is changed by the environment
 vim.defer_fn(function()
-    if not vim.loop.fs_stat(colors_dir .. "/theme") or not vim.loop.fs_stat(colors_dir .. "/theme").type == "file" then
+    if not vim.loop.fs_stat(colors_dir .. "/theme").type == "file" then
         return
     end
     local w = vim.loop.new_fs_event()
@@ -138,4 +136,6 @@ end, 1000)
 vim.api.nvim_create_user_command("ThemeCompile", compile, {})
 vim.api.nvim_create_user_command("Retheme", function() pcall(dofile, colors_dir .. "/theme") end, {})
 vim.defer_fn(function() if #vim.fn.readdir(colors_dir) <= 3 then compile() end end, 0)
-pcall(dofile, colors_dir .. "/theme")
+if vim.loop.fs_stat(colors_dir .. "/theme").type == "file" then
+    pcall(dofile, colors_dir .. "/theme")
+end
