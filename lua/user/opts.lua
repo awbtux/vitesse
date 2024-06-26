@@ -3,7 +3,6 @@
 local globals = {
     mapleader = " ",
     maplocalleader = " ",
-    transparency = false,
     termgui = false,
     cmp_border_color = "grey_fg",
     cmp_icons = true,

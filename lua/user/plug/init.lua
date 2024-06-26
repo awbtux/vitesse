@@ -28,6 +28,22 @@ local plugins = {
         end,
     },
 
+    -- file/fuzzy finder
+    { "nvim-telescope/telescope.nvim",
+        dependencies = {
+            { "nvim-telescope/telescope-fzf-native.nvim",
+                build = "make",
+                lazy = true,
+            },
+            "nvim-lua/plenary.nvim",
+            "nvim-lua/popup.nvim",
+        },
+        cmd = "Telescope",
+        config = function()
+            require "user.plug.telescope"
+        end,
+    },
+
     -- preview hex color codes
     { "NvChad/nvim-colorizer.lua",
         event = {
