@@ -134,6 +134,7 @@ end, 1000)
 
 -- run
 vim.api.nvim_create_user_command("ThemeCompile", compile, {})
+vim.api.nvim_create_user_command("Retheme", function() pcall(dofile, colors_dir .. "/theme") end, {})
 vim.defer_fn(function() if #vim.fn.readdir(colors_dir) <= 3 then compile() end end, 0)
 if vim.loop.fs_stat(colors_dir .. "/theme").type == "file" then
     pcall(dofile, colors_dir .. "/theme")
