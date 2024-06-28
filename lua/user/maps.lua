@@ -79,6 +79,9 @@ bind("n", "<M-S-j>", "<C-w>j", opts)
 bind("n", "<M-S-k>", "<C-w>k", opts)
 bind("n", "<M-S-l>", "<C-w>l", opts)
 
+-- fold shortcut
+bind("n", "zz", "zA", opts)
+
 -- plugins
 bind("n", "<leader>p", ":Lazy<LF>", opts)
 bind("n", "<leader>ff", ":Telescope find_files find_command=find,-xdev,-maxdepth,4<LF>", opts)

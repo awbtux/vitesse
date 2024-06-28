@@ -11,8 +11,6 @@ function M.set(scheme)
 
         Normal                 = { fg = col16.color05, bg = col16.color00 },
         NormalFloat            = { bg = col30.darker_black },
-        StatusLine             = { fg = col30.white, bg = lighten(col30.statusline_bg, scheme.type == "light" and -3 or 1), ctermfg = 15, ctermbg = 8 },
-        StatusLineNC           = { fg = col30.grey_fg2, bg = lighten(col30.statusline_bg, scheme.type == "light" and -3 or 1), ctermfg = 7, ctermbg = 8 },
 
         Cursor                 = { fg = col16.color00, bg = col16.color05 },
         CursorColumn           = { bg = col16.color01, sp = "none" },

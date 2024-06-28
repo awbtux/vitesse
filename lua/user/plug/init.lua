@@ -1,14 +1,5 @@
 local install_path = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
--- install lazy.nvim if we don't have it
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-    print("Installing folke/lazy.nvim (plugin manager)... ")
-    Bootstrapped = vim.fn.system({ "git", "clone", "--depth", "1", "--filter=blob:none", "https://github.com/folke/lazy.nvim", install_path })
-end
-
--- add lazy.nvim to the runtime path
-vim.opt.rtp:prepend(install_path)
-
 local plugins = {
     -- session support
     { "stevearc/resession.nvim",
@@ -32,7 +23,7 @@ local plugins = {
     { "nvim-telescope/telescope.nvim",
         dependencies = {
             { "nvim-telescope/telescope-fzf-native.nvim",
-                build = "make",
+                build = '(make || printf "return {}\\n" >lua/telescope/_extensions/fzf.lua);:',
                 lazy = true,
             },
             "nvim-lua/plenary.nvim",
@@ -96,6 +87,17 @@ local plugins = {
         },
         config = function()
             require "user.plug.nvimtree"
+        end,
+    },
+
+    -- git signs
+    { "lewis6991/gitsigns.nvim",
+        event = {
+            "BufReadPost",
+            "BufWrite",
+        },
+        config = function()
+            require "user.plug.gitsigns"
         end,
     },
 
@@ -238,6 +240,55 @@ local opts = {
         require = true,
     },
 }
+
+-- prompt user for y/n
+local function yesno(prompt)
+    vim.cmd.redraw()
+    print(prompt)
+    local char = vim.fn.getchar()
+    if char == 89 or char == 121 then
+        return true
+    elseif char == 78 or char == 110 then
+        return false
+    end
+    return nil
+end
+
+-- fallback command reinstalls lazy
+vim.api.nvim_create_user_command('Lazy', function()
+    -- install lazy.nvim if we don't have it
+    vim.fn.system({ "rm", "-rf", install_path })
+    print("Installing plugin manager... ")
+    Bootstrapped = vim.fn.system({ "git", "clone", "--depth", "1", "--filter=blob:none", "https://github.com/folke/lazy.nvim", install_path })
+
+    -- add lazy.nvim to the runtime path
+    vim.opt.rtp:prepend(install_path)
+
+    -- try to require lazy.nvim
+    local lazy_status_ok, lazy = pcall(require, "lazy")
+    if lazy_status_ok then
+        lazy.setup(plugins, opts)
+    end
+end, { nargs = 0 })
+
+-- install lazy.nvim if we don't have it
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+    local char
+    while true do
+        choice = yesno("Should the plugin manager be installed? [y/N] ")
+        if choice == true then
+            break
+        elseif choice == false then
+            vim.fn.system({ "mkdir", "-p", install_path })
+            return
+        end
+    end
+    print("Installing plugin manager... ")
+    Bootstrapped = vim.fn.system({ "git", "clone", "--depth", "1", "--filter=blob:none", "https://github.com/folke/lazy.nvim", install_path })
+end
+
+-- add lazy.nvim to the runtime path
+vim.opt.rtp:prepend(install_path)
 
 -- try to require lazy.nvim
 local lazy_status_ok, lazy = pcall(require, "lazy")

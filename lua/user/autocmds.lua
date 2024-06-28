@@ -26,5 +26,8 @@ autocmd("VimResized", { command = "tabdo wincmd =" })
 -- remove trailing whitespaces from the end of lines
 autocmd("BufWritePre", { pattern = "*", command = ":%s/\\s\\+$//e" })
 
+-- create nonexistent path components
+autocmd("BufWritePre", { pattern = "*", callback = function() if vim.fn.isdirectory(vim.fn.expand('%:p:h')) ~= 1 then vim.fn.system({ "mkdir", "-p", "--", vim.fn.expand('%:p:h') }) end end })
+
 -- when Xresources is modified, update it
 autocmd("BufWritePost", { pattern = { "*Xresources", "*Xdefaults", "*xresources", "*xdefaults" }, command = "silent! !xrdb %" })
