@@ -19,6 +19,28 @@ local plugins = {
         end,
     },
 
+    -- show typed keys
+    { "NStefan002/screenkey.nvim",
+        cmd = "Screenkey",
+        config = function()
+            require "user.plug.screenkey"
+        end,
+    },
+
+    -- color picker
+    { "uga-rosa/ccc.nvim",
+        cmd = {
+            "CccPick",
+            "CccConvert",
+            "CccHighlighterEnable",
+            "CccHighlighterDisable",
+            "CccHighlighterToggle",
+        },
+        config = function()
+            require "user.plug.ccc"
+        end,
+    },
+
     -- file/fuzzy finder
     { "nvim-telescope/telescope.nvim",
         dependencies = {

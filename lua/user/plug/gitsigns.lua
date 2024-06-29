@@ -5,8 +5,8 @@ end
 
 local opts = {
     signs = {
-        add = { text = '┃' },
-        change = { text = '┃' },
+        add = { text = '▏' }, -- or ▎
+        change = { text = '▏' }, -- or ▎
         delete = { text = '_' },
         topdelete = { text = '‾' },
         changedelete = { text = '~' },

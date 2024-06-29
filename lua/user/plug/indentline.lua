@@ -13,7 +13,7 @@ local opts = {
     },
 
     indent = {
-        char = "▎",
+        char = "▏", -- or ▎
         tab_char = nil,
         highlight = "IblIndent",
         smart_indent_cap = true,

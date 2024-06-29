@@ -1,122 +1,4 @@
---- *mini.statusline* Statusline
---- *MiniStatusline*
----
---- MIT License Copyright (c) 2021 Evgeni Chasnovski
----
---- ==============================================================================
----
---- Features:
---- - Define own custom statusline structure for active and inactive windows.
----     This is done with a function which should return string appropriate for
----     |statusline|. Its code should be similar to default one with structure:
----         - Compute string data for every section you want to be displayed.
----         - Combine them in groups with |MiniStatusline.combine_groups()|.
----
---- - Built-in active mode indicator with colors.
----
---- - Sections can hide information when window is too narrow (specific window
----     width is configurable per section).
----
---- # Dependencies ~
----
---- Suggested dependencies (provide extra functionality, statusline will work
---- without them):
---- - Nerd font (to support extra icons).
----
---- - Enabled |MiniGit| module for |MiniStatusline.section_git()|.
----     Falls back to using 'lewis6991/gitsigns.nvim' plugin or shows nothing.
----
---- - Enabled |MiniDiff| module for |MiniStatusline.section_diff()|.
----     Falls back to using 'lewis6991/gitsigns.nvim' plugin or shows nothing.
----
---- - Plugin 'nvim-tree/nvim-web-devicons' for filetype icons
----     in |MiniStatusline.section_fileinfo()|. If missing, no icons will be shown.
----
---- # Setup ~
----
---- This module needs a setup with `require('mini.statusline').setup({})`
---- (replace `{}` with your `config` table). It will create global Lua table
---- `MiniStatusline` which you can use for scripting or manually (with
---- `:lua MiniStatusline.*`).
----
---- See |MiniStatusline.config| for `config` structure and default values. For
---- some content examples, see |MiniStatusline-example-content|.
----
---- You can override runtime config settings locally to buffer inside
---- `vim.b.ministatusline_config` which should have same structure as
---- `MiniStatusline.config`. See |mini.nvim-buffer-local-config| for more details.
----
---- # Highlight groups ~
----
---- Highlight depending on mode (second output from |MiniStatusline.section_mode|):
---- * `MiniStatuslineModeNormal` - Normal mode.
---- * `MiniStatuslineModeInsert` - Insert mode.
---- * `MiniStatuslineModeVisual` - Visual mode.
---- * `MiniStatuslineModeReplace` - Replace mode.
---- * `MiniStatuslineModeCommand` - Command mode.
---- * `MiniStatuslineModeOther` - other modes (like Terminal, etc.).
----
---- Highlight used in default statusline:
---- * `MiniStatuslineDevinfo` - for "dev info" group
----     (|MiniStatusline.section_git| and |MiniStatusline.section_diagnostics|).
---- * `MiniStatuslineFilename` - for |MiniStatusline.section_filename| section.
---- * `MiniStatuslineFileinfo` - for |MiniStatusline.section_fileinfo| section.
----
---- Other groups:
---- * `MiniStatuslineInactive` - highliting in not focused window.
----
---- To change any highlight group, modify it directly with |:highlight|.
----
---- # Disabling ~
----
---- To disable (show empty statusline), set `vim.g.ministatusline_disable`
---- (globally) or `vim.b.ministatusline_disable` (for a buffer) to `true`.
---- Considering high number of different scenarios and customization
---- intentions, writing exact rules for disabling module's functionality is
---- left to user. See |mini.nvim-disabling-recipes| for common recipes.
-
---- Example content
----
---- # Default content ~
----
---- This function is used as default value for active content:
---- >
----     function()
----         local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
----         local git                       = MiniStatusline.section_git({ trunc_width = 40 })
----         local diff                  = MiniStatusline.section_diff({ trunc_width = 75 })
----         local diagnostics       = MiniStatusline.section_diagnostics({ trunc_width = 75 })
----         local lsp                       = MiniStatusline.section_lsp({ trunc_width = 75 })
----         local filename          = MiniStatusline.section_filename({ trunc_width = 140 })
----         local fileinfo          = MiniStatusline.section_fileinfo({ trunc_width = 120 })
----         local location          = MiniStatusline.section_location({ trunc_width = 75 })
----         local search                = MiniStatusline.section_searchcount({ trunc_width = 75 })
----
----         return MiniStatusline.combine_groups({
----             { hl = mode_hl,                                  strings = { mode } },
----             { hl = 'MiniStatuslineDevinfo',  strings = { git, diff, diagnostics, lsp } },
----             '%<', -- Mark general truncate point
----             { hl = 'MiniStatuslineFilename', strings = { filename } },
----             '%=', -- End left alignment
----             { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
----             { hl = mode_hl,                                  strings = { search, location } },
----         })
----     end
---- <
---- # Show boolean options ~
----
---- To compute section string for boolean option use variation of this code
---- snippet inside content function (you can modify option itself, truncation
---- width, short and long displayed names):
---- >
----     local spell = vim.wo.spell and (MiniStatusline.is_truncated(120) and 'S' or 'SPELL') or ''
---- <
---- Here `x and y or z` is a common Lua way of doing ternary operator: if `x`
---- is `true`-ish then return `y`, if not - return `z`.
----@tag MiniStatusline-example-content
-
----@alias __statusline_args table Section arguments.
----@alias __statusline_section string Section string.
+-- status line
 
 -- Module definition ==========================================================
 local MiniStatusline = {}
@@ -152,21 +34,11 @@ end
 --- Default values:
 ---@eval return MiniDoc.afterlines_to_code(MiniDoc.current.eval_section)
 MiniStatusline.config = {
-    -- Content of statusline as functions which return statusline string. See
-    -- `:h statusline` and code of default contents (used instead of `nil`).
     content = {
-        -- Content for active window
         active = nil,
-        -- Content for inactive window(s)
         inactive = nil,
     },
-
-    -- Whether to use icons by default
     use_icons = true,
-
-    -- Whether to set Vim's settings for statusline (make it always shown with
-    -- 'laststatus' set to 2).
-    -- To use global statusline, set this to `false` and 'laststatus' to 3.
     set_vim_settings = true,
 }
 --minidoc_afterlines_end
@@ -174,15 +46,11 @@ MiniStatusline.config = {
 -- Module functionality =======================================================
 --- Compute content for active window
 MiniStatusline.active = function()
-    if M.is_disabled() then return '' end
-
     return (M.get_config().content.active or M.default_content_active)()
 end
 
 --- Compute content for inactive window
 MiniStatusline.inactive = function()
-    if M.is_disabled() then return '' end
-
     return (M.get_config().content.inactive or M.default_content_inactive)()
 end
 
@@ -305,9 +173,9 @@ MiniStatusline.section_diff = function(args)
     local use_icons = M.use_icons or M.get_config().use_icons
     local icon = args.icon or (use_icons and '' or 'diff:')
 
-    local added = ((summary.add or summary.added or 0) > 0 and "%#MiniStatuslineDiffAdded#" .. (use_icons and " " .. "%#MiniStatuslineDiff#" or "+") .. tostring(summary.add or summary.added) or nil)
-    local changed = ((summary.change or summary.changed or 0) > 0 and "%#MiniStatuslineDiffChanged#" .. (use_icons and " " .. "%#MiniStatuslineDiff#" or "~") .. tostring(summary.change or summary.changed) or nil)
-    local removed = ((summary.delete or summary.removed or 0) > 0 and "%#MiniStatuslineDiffRemoved#" .. (use_icons and " " .. "%#MiniStatuslineDiff#" or "-") .. tostring(summary.delete or summary.removed) or nil)
+    local added = ((summary.add or summary.added or 0) > 0 and "%#StatusLineDiffAdded#" .. (use_icons and " " .. "%#StatusLineDiff#" or "+") .. tostring(summary.add or summary.added) or nil)
+    local changed = ((summary.change or summary.changed or 0) > 0 and "%#StatusLineDiffChanged#" .. (use_icons and " " .. "%#StatusLineDiff#" or "~") .. tostring(summary.change or summary.changed) or nil)
+    local removed = ((summary.delete or summary.removed or 0) > 0 and "%#StatusLineDiffRemoved#" .. (use_icons and " " .. "%#StatusLineDiff#" or "-") .. tostring(summary.delete or summary.removed) or nil)
 
     return (
         (icon ~= "" and icon .. " " or "") ..
@@ -380,15 +248,15 @@ end
 MiniStatusline.section_filename = function(args)
     local filename = vim.fn.expand("%:t")
     if filename == "NvimTree_1" and vim.bo.buftype == "nofile" then
-        return "%#MiniStatuslineNonFilename#" .. (MiniStatusline.is_truncated(args.trunc_width - 90) and "[Files]" or "[File Explorer]")
+        return "%#StatusLineNonFilename#" .. (MiniStatusline.is_truncated(args.trunc_width - 90) and "[Files]" or "[File Explorer]")
     end
     if vim.bo.buftype == 'help' then
-        return "%#MiniStatuslineNonFilename#[Help] " .. (MiniStatusline.is_truncated(args.trunc_width - 80) and "" or vim.fn.expand("%:t"))
+        return "%#StatusLineNonFilename#[Help] " .. (MiniStatusline.is_truncated(args.trunc_width - 80) and "" or vim.fn.expand("%:t"))
     end
     if vim.bo.buftype == 'terminal' then
-        return '%#MiniStatuslineFilename#' .. vim.fn.expand("%:p"):gsub('term://[^/]+.*//(%d+):(.*/)', "term://")
+        return '%#StatusLineFilename#' .. vim.fn.expand("%:p"):gsub('term://[^/]+.*//(%d+):(.*/)', "term://")
     end
-    local hl = ((vim.bo.buftype ~= "") or filename == "" or not filename) and "MiniStatuslineNonFilename" or "MiniStatuslineFilename"
+    local hl = ((vim.bo.buftype ~= "") or filename == "" or not filename) and "StatusLineNonFilename" or "StatusLineFilename"
     return '%#' .. hl .. (MiniStatusline.is_truncated(args.trunc_width) and '#%f%m%r' or '#%F%m%r')
 end
 
@@ -532,21 +400,19 @@ M.create_default_hl = function()
         vim.api.nvim_set_hl(0, name, data)
     end
 
-    set_default_hl('MiniStatuslineModeNormal',  { link = 'Cursor' })
-    set_default_hl('MiniStatuslineModeInsert',  { link = 'DiffChange' })
-    set_default_hl('MiniStatuslineModeVisual',  { link = 'DiffAdd' })
-    set_default_hl('MiniStatuslineModeReplace', { link = 'DiffDelete' })
-    set_default_hl('MiniStatuslineModeCommand', { link = 'DiffText' })
-    set_default_hl('MiniStatuslineModeOther',       { link = 'IncSearch' })
+    set_default_hl('StatusLineModeNormal',  { link = 'Cursor' })
+    set_default_hl('StatusLineModeInsert',  { link = 'DiffChange' })
+    set_default_hl('StatusLineModeVisual',  { link = 'DiffAdd' })
+    set_default_hl('StatusLineModeReplace', { link = 'DiffDelete' })
+    set_default_hl('StatusLineModeCommand', { link = 'DiffText' })
+    set_default_hl('StatusLineModeOther',       { link = 'IncSearch' })
 
     set_default_hl('MiniStatuslineDevinfo',  { link = 'StatusLine' })
-    set_default_hl('MiniStatuslineFilename', { link = 'StatusLineNC' })
-    set_default_hl('MiniStatuslineNonFilename', { link = 'StatusLineNC' })
-    set_default_hl('MiniStatuslineFileinfo', { link = 'StatusLine' })
-    set_default_hl('MiniStatuslineInactive', { link = 'StatusLineNC' })
+    set_default_hl('StatusLineFilename', { link = 'StatusLineNC' })
+    set_default_hl('StatusLineNonFilename', { link = 'StatusLineNC' })
+    set_default_hl('StatusLineFileinfo', { link = 'StatusLine' })
+    set_default_hl('StatusLineNC', { link = 'StatusLineNC' })
 end
-
-M.is_disabled = function() return vim.g.ministatusline_disable == true or vim.b.ministatusline_disable == true end
 
 M.get_config = function(config)
     return vim.tbl_deep_extend('force', MiniStatusline.config, vim.b.ministatusline_config or {}, config or {})
@@ -571,23 +437,23 @@ local CTRL_V = vim.api.nvim_replace_termcodes('<C-V>', true, true, true)
 
 -- stylua: ignore start
 M.modes = setmetatable({
-    ['n']        = { long = 'NORMAL',       short = 'N',     hl = 'MiniStatuslineModeNormal' },
-    ['v']        = { long = 'VISUAL',       short = 'V',     hl = 'MiniStatuslineModeVisual' },
-    ['V']        = { long = 'V-LINE',       short = 'V-L', hl = 'MiniStatuslineModeVisual' },
-    [CTRL_V] = { long = 'V-BLOCK',  short = 'V-B', hl = 'MiniStatuslineModeVisual' },
-    ['s']        = { long = 'SELECT',       short = 'S',     hl = 'MiniStatuslineModeVisual' },
-    ['S']        = { long = 'S-LINE',       short = 'S-L', hl = 'MiniStatuslineModeVisual' },
-    [CTRL_S] = { long = 'S-BLOCK',  short = 'S-B', hl = 'MiniStatuslineModeVisual' },
-    ['i']        = { long = 'INSERT',       short = 'I',     hl = 'MiniStatuslineModeInsert' },
-    ['R']        = { long = 'REPLACE',  short = 'R',     hl = 'MiniStatuslineModeReplace' },
-    ['c']        = { long = 'COMMAND',  short = 'C',     hl = 'MiniStatuslineModeCommand' },
-    ['r']        = { long = 'PROMPT',       short = 'P',     hl = 'MiniStatuslineModeOther' },
-    ['!']        = { long = 'SHELL',        short = 'Sh',  hl = 'MiniStatuslineModeOther' },
-    ['t']        = { long = 'TERMINAL', short = 'T',     hl = 'MiniStatuslineModeOther' },
+    ['n']        = { long = 'NORMAL',       short = 'N',     hl = 'StatusLineModeNormal' },
+    ['v']        = { long = 'VISUAL',       short = 'V',     hl = 'StatusLineModeVisual' },
+    ['V']        = { long = 'V-LINE',       short = 'V-L', hl = 'StatusLineModeVisual' },
+    [CTRL_V] = { long = 'V-BLOCK',  short = 'V-B', hl = 'StatusLineModeVisual' },
+    ['s']        = { long = 'SELECT',       short = 'S',     hl = 'StatusLineModeVisual' },
+    ['S']        = { long = 'S-LINE',       short = 'S-L', hl = 'StatusLineModeVisual' },
+    [CTRL_S] = { long = 'S-BLOCK',  short = 'S-B', hl = 'StatusLineModeVisual' },
+    ['i']        = { long = 'INSERT',       short = 'I',     hl = 'StatusLineModeInsert' },
+    ['R']        = { long = 'REPLACE',  short = 'R',     hl = 'StatusLineModeReplace' },
+    ['c']        = { long = 'COMMAND',  short = 'C',     hl = 'StatusLineModeCommand' },
+    ['r']        = { long = 'PROMPT',       short = 'P',     hl = 'StatusLineModeOther' },
+    ['!']        = { long = 'SHELL',        short = 'Sh',  hl = 'StatusLineModeOther' },
+    ['t']        = { long = 'TERMINAL', short = 'T',     hl = 'StatusLineModeOther' },
 }, {
     -- By default return 'Unknown' but this shouldn't be needed
     __index = function()
-        return   { long = 'UNKNOWN',    short = 'U',     hl = '%#MiniStatuslineModeOther#' }
+        return   { long = 'UNKNOWN',    short = 'U',     hl = '%#StatusLineModeOther#' }
     end,
 })
 -- stylua: ignore end
@@ -612,19 +478,19 @@ M.default_content_active = function()
     -- sections, etc.)
     return "%#" .. mode_hl .. "#" .. mode .. " " .. MiniStatusline.combine_groups({
         '%<',
-        { hl = 'MiniStatuslineFilename', strings = { filename } },
+        { hl = 'StatusLineFilename', strings = { filename } },
         '%>',
-        { hl = 'MiniStatuslineGit',  strings = { git } },
-        { hl = 'MiniStatuslineDiff',  strings = { diff } },
+        { hl = 'StatusLineGit',  strings = { git } },
+        { hl = 'StatusLineDiff',  strings = { diff } },
         '%=',
-        { hl = 'MiniStatuslineDiagnostics',  strings = { diagnostics } },
-        { hl = 'MiniStatuslineLSP',  strings = { lsp } },
-        { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+        { hl = 'StatusLineDiagnostics',  strings = { diagnostics } },
+        { hl = 'StatusLineLSP',  strings = { lsp } },
+        { hl = 'StatusLineFileinfo', strings = { fileinfo } },
         { hl = mode_hl,                                  strings = { search, location } },
     })
 end
 
-M.default_content_inactive = function() return '%#MiniStatuslineInactive#%F%=' end
+M.default_content_inactive = function() return '%#StatusLineNC#%F%=' end
 
 -- LSP ------------------------------------------------------------------------
 M.get_attached_lsp = function() return M.attached_lsp[vim.api.nvim_get_current_buf()] or '' end

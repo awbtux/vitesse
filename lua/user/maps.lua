@@ -65,11 +65,6 @@ bind("i", "kj", "<ESC><C-l>", opts)
 --bind("v", "kj", "<ESC><C-l>", opts)
 --bind("x", "kj", "<ESC><C-l>", opts)
 
--- force the user to use these alternatives
-bind("i", "<ESC>", "<C-o>:echo \"Press \'k\' and \'j\' in quick succession to exit insert mode.\"<LF>", opts)
---bind("v", "<ESC>", ":<C-u>echo \"Press \'k\' and \'j\' in quick succession to exit visual mode.\"<LF>gv", opts)
---bind("x", "<ESC>", ":<C-u>echo \"Press \'k\' and \'j\' in quick succession to exit visual-block mode.\"<LF>gv", opts)
-
 -- redraw screen, just like in bash
 bind("n", "<C-l>", ":nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<LF><LF><C-l>", opts)
 
@@ -78,9 +73,6 @@ bind("n", "<M-S-h>", "<C-w>h", opts)
 bind("n", "<M-S-j>", "<C-w>j", opts)
 bind("n", "<M-S-k>", "<C-w>k", opts)
 bind("n", "<M-S-l>", "<C-w>l", opts)
-
--- fold shortcut
-bind("n", "zz", "zA", opts)
 
 -- plugins
 bind("n", "<leader>p", ":Lazy<LF>", opts)
@@ -98,6 +90,13 @@ bind("n", "<leader>gb", ":Telescope git_bcommits<LF>", opts)
 bind("n", "<leader>t", ":terminal<LF>", opts)
 bind("n", "<leader>T", ":vsplit | terminal<LF>", opts)
 bind("n", "Q", ':Bdelete!<LF>', opts)
+
+-- color picker
+bind("n", "<leader>cc", ":CccConvert<LF>", opts)
+bind("n", "<leader>cp", ":CccPick<LF>", opts)
+
+-- screenkey
+bind("n", "<leader>ss", ":Screenkey<LF>", opts)
 
 -- nvim tree keybinds
 bind("n", "<leader>n", ":NvimTreeToggle<LF>", opts)
