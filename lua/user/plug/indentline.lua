@@ -5,7 +5,7 @@ end
 
 local opts = {
     enabled = true,
-    debounce = 350,
+    debounce = 400,
 
     viewport_buffer = {
         min = 20,
