@@ -5,11 +5,11 @@ end
 
 local opts = {
     enabled = true,
-    debounce = 200,
+    debounce = 350,
 
     viewport_buffer = {
-        min = 30,
-        max = 500,
+        min = 20,
+        max = 0,
     },
 
     indent = {
