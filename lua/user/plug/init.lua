@@ -95,22 +95,22 @@ local plugins = {
     },
 
     -- file manager pane
-    { "nvim-tree/nvim-tree.lua",
-        cmd = {
-            "NvimTreeToggle",
-            "NvimTreeOpen",
-            "NvimTreeClose",
-            "NvimTreeRefresh",
-            "NvimTreeFindFile",
-            "NvimTreeFindFileToggle",
-        },
-        dependencies = {
-            "nvim-tree/nvim-web-devicons",
-        },
-        config = function()
-            require "user.plug.nvimtree"
-        end,
-    },
+    --{ "nvim-tree/nvim-tree.lua",
+    --    cmd = {
+    --        "NvimTreeToggle",
+    --        "NvimTreeOpen",
+    --        "NvimTreeClose",
+    --        "NvimTreeRefresh",
+    --        "NvimTreeFindFile",
+    --        "NvimTreeFindFileToggle",
+    --    },
+    --    dependencies = {
+    --        "nvim-tree/nvim-web-devicons",
+    --    },
+    --    config = function()
+    --        require "user.plug.nvimtree"
+    --    end,
+    --},
 
     -- git signs
     { "lewis6991/gitsigns.nvim",

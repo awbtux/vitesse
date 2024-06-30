@@ -99,5 +99,5 @@ bind("n", "<leader>cp", ":CccPick<LF>", opts)
 bind("n", "<leader>ss", ":Screenkey<LF>", opts)
 
 -- nvim tree keybinds
-bind("n", "<leader>n", ":NvimTreeToggle<LF>", opts)
-bind("n", "<C-n>", ":NvimTreeToggle<LF>", opts)
+bind("n", "<leader>n", ":lua MiniFiles.open()<LF>", opts)
+bind("n", "<C-n>", ":lua MiniFiles.open()<LF>", opts)
